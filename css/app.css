@@ -365,7 +365,7 @@ a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; 
 .compose-head .icon-btn:hover { background: rgba(127,127,127,.25); }
 .compose-head .ic { width: 19px; height: 19px; }
 .compose-body { flex: 1; display: flex; flex-direction: column; min-height: 0; overflow-y: auto; }
-.compose-row { display: flex; align-items: center; gap: 8px; padding: 4px 16px; border-bottom: 1.2px solid var(--line-soft); min-height: 46px; }
+.compose-row { display: flex; align-items: center; gap: 8px; padding: 4px 16px; min-height: 46px; }
 .compose-row > .lbl { color: var(--ink-3); width: 50px; flex: none; font-size: 17px; }
 .compose-row input.bare { flex: 1; min-width: 80px; border: 0; outline: none; background: none; font-size: 18px; padding: 6px 0; }
 .compose-row .toggles { display: flex; gap: 4px; margin-left: auto; }

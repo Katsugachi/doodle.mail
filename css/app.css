@@ -365,7 +365,7 @@ a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; 
 .compose-head .icon-btn:hover { background: rgba(127,127,127,.25); }
 .compose-head .ic { width: 19px; height: 19px; }
 .compose-body { flex: 1; display: flex; flex-direction: column; min-height: 0; overflow-y: auto; }
-.compose-row { display: flex; align-items: center; gap: 8px; padding: 4px 16px; min-height: 46px; }
+.compose-row { display: flex; align-items: center; gap: 8px; padding: 4px 16px; border-bottom: 1.2px solid var(--line-soft); min-height: 46px; }
 .compose-row > .lbl { color: var(--ink-3); width: 50px; flex: none; font-size: 17px; }
 .compose-row input.bare { flex: 1; min-width: 80px; border: 0; outline: none; background: none; font-size: 18px; padding: 6px 0; }
 .compose-row .toggles { display: flex; gap: 4px; margin-left: auto; }
@@ -382,7 +382,6 @@ a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; 
 .suggest button.on, .suggest button:hover { background: var(--hover); }
 .suggest .avatar { width: 30px; height: 30px; font-size: 15px; }
 .compose textarea.body { flex: 1; min-height: 180px; border: 0; outline: none; background: none; resize: none; padding: 14px 18px; font-size: 18.5px; line-height: 1.6;
-  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent calc(1.6em - 1px), var(--line-soft) calc(1.6em - 1px), var(--line-soft) 1.6em); background-attachment: local; background-position: 0 14px; }
 .compose .sig-preview { margin: 0 18px 8px; padding: 6px 12px; border-left: 2px solid var(--line-soft); white-space: pre-wrap; color: var(--ink-2); font-size: 16.5px; }
 .compose-atts { display: flex; flex-wrap: wrap; gap: 8px; padding: 6px 16px 10px; }
 .compose-att { display: inline-flex; align-items: center; gap: 8px; padding: 4px 6px 4px 12px; border: 1.3px solid var(--line-soft); border-radius: 12px 14px 12px 13px; font-size: 15px; max-width: 260px; }

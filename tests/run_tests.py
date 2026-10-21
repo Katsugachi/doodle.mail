@@ -288,6 +288,10 @@ def test_net(browser, base_url):
         arg=offline_mid,
         timeout=40_000,
     )
+    assert_true(
+        alice_page.evaluate("window.status") == "online",
+        "Offline-recipient error changed the sender transport status",
+    )
     bob_page.evaluate("(handle) => window.setupMailbox(handle)", bob)
     bob_page.wait_for_function("window.status === 'online'", timeout=45_000)
     bob_page.wait_for_function(

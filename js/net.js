@@ -399,6 +399,8 @@ export function createTransport({
         return;
       }
       rejectPendingForPeer(error);
+      // Per-recipient failures (e.g. 'peer-unavailable') don't mean our own signalling link is down.
+      if (!nextPeer.destroyed && !nextPeer.disconnected && nextPeer.open) return;
       setStatus('error', error);
       if (nextPeer.destroyed) scheduleReconnect(true);
     });

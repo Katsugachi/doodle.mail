@@ -2,6 +2,8 @@
 
 A notebook-doodle, monochrome, Gmail-style mail app where messages travel **peer-to-peer over WebRTC**. It's a fully static site with no build step, no backend and no database server, so it runs as-is on GitHub Pages. Every account, message and attachment is stored locally in the browser.
 
+thanks claude :)
+
 ## Features
 
 - **Addresses**: sign up as `you@doodle.mail` (first come, first served among online peers). You must tick the Terms of Service box to sign up.
@@ -25,11 +27,6 @@ python3 -m http.server 8000
 
 You need a real HTTP origin because ES modules and IndexedDB don't work over `file://`. To try a conversation, open the app in two different browser profiles (or one normal and one private window) and create a different address in each.
 
-## Deploy to GitHub Pages
-
-This repo includes `.github/workflows/pages.yml`. In **Settings → Pages**, set **Source** to **GitHub Actions**, then push to `main`. You can also choose "Deploy from a branch" (root): the site is plain static files and `.nojekyll` is included.
-
-> GitHub Pages for **private** repositories requires a paid GitHub plan. To use the free tier, make the repo public.
 
 ## How it works
 

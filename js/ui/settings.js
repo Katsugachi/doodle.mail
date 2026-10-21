@@ -64,8 +64,7 @@ function general(body) {
         if (p !== 'granted') { toast('Notifications were blocked by the browser'); return false; }
         return true;
       })),
-      row('Keyboard shortcuts', 'Press ? anywhere to see them.', toggle('shortcuts')),
-      row('Cat companion', 'The little cat in the corner. It naps a lot.', toggle('cat'))));
+      row('Keyboard shortcuts', 'Press ? anywhere to see them.', toggle('shortcuts'))));
 }
 
 function appearance(body) {

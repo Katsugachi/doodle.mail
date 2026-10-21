@@ -13,7 +13,6 @@ export const S = {
   route: { view: 'folder', folder: 'inbox' },
   filter: 'all',
   selected: new Set(),
-  cat: null,
 };
 
 const LS = {
@@ -55,7 +54,6 @@ export function defaultSettings(name) {
     autoMarkRead: true,
     undoSeconds: 5,
     notifications: false,
-    cat: true,
     shortcuts: true,
     network: { host: '', port: '', path: '', secure: true, iceServers: '' },
   };

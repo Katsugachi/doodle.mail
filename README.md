@@ -14,7 +14,6 @@ A notebook-doodle, monochrome, Gmail-style mail app where messages travel **peer
 - **Bulk actions**: **mark all as read**, select, star, label, snooze, archive, spam, bin.
 - **Spam & blocking**: block senders, optionally send strangers to Spam, and auto-spam letters with bad or changed signatures.
 - **Settings**: light/dark/system theme, inbox **density** (comfortable/default/compact), notifications, shortcuts, a custom PeerJS server and STUN/TURN, backup export/import, persistent storage, and account deletion.
-- **Cat**: the sidebar cat wanders around, sits and watches your cursor, and naps. Click it to pet it. It respects `prefers-reduced-motion`.
 - Responsive layout with a mobile drawer, keyboard shortcuts (press `?`), and a strict page CSP (`script-src 'self'`, no inline script or style).
 
 ## Run locally
@@ -44,7 +43,6 @@ This repo includes `.github/workflows/pages.yml`. In **Settings → Pages**, set
 | IndexedDB storage | `js/db.js` |
 | Sandboxed HTML preview | `js/htmlpreview.js`, `sandbox.html` |
 | UI: compose, reader, settings, onboarding | `js/ui/*` |
-| The cat | `js/cat.js` |
 
 **Limits.** Delivery only happens while both browsers are open. The default signalling server is the free public PeerJS cloud: for reliability or privacy, self-host [peerjs-server](https://github.com/peers/peerjs-server) and set it in Settings → Network (everyone you write to must use the same server). Some strict networks need a TURN server. Addresses aren't globally reserved: anyone can claim an address while its owner is offline, which is why sender keys are pinned and key changes are flagged.
 

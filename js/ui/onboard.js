@@ -4,7 +4,6 @@ import { listAccounts, upsertAccount, defaultSettings } from '../state.js';
 import { normalizeAddress, checkAvailability } from '../net.js';
 import { generateIdentity } from '../crypto.js';
 import { openDB } from '../db.js';
-import { mountCat } from '../cat.js';
 import { importBackup } from '../backup.js';
 import { modal, toast } from './common.js';
 import { termsBody } from './terms.js';
@@ -25,25 +24,23 @@ export function renderOnboard(root, { onReady }) {
       h('li', null, icon('shield'), 'Signed messages, pinned sender keys'),
       h('li', null, icon('code'), 'Send HTML that renders — safely sandboxed'),
       h('li', null, icon('clip'), 'Images, zips & files up to 25 MB'),
-    ),
-    h('div', { class: 'cat-corner' }));
+    ));
   const form = h('div', { class: 'onboard-form' });
   const card = h('div', { class: 'onboard-card sketch' }, art, form);
   root.appendChild(card);
-  const cat = mountCat(art.querySelector('.cat-corner'));
 
   function draw() {
     clear(form);
     form.appendChild(h('div', { class: 'tabs-line', role: 'tablist' },
-      accounts.length ? h('button', { class: tab === 'signin' ? 'on' : '', role: 'tab', onclick: () => { tab = 'signin'; draw(); } }, 'Open notebook') : null,
-      h('button', { class: tab === 'signup' ? 'on' : '', role: 'tab', onclick: () => { tab = 'signup'; draw(); } }, 'Get an address'),
+      accounts.length ? h('button', { class: tab === 'signin' ? 'on' : '', role: 'tab', onclick: () => { tab = 'signin'; draw(); } }, 'Sign in') : null,
+      h('button', { class: tab === 'signup' ? 'on' : '', role: 'tab', onclick: () => { tab = 'signup'; draw(); } }, 'Sign up'),
       h('button', { class: tab === 'restore' ? 'on' : '', role: 'tab', onclick: () => { tab = 'restore'; draw(); } }, 'Restore')));
     if (tab === 'signin') drawSignin();
     else if (tab === 'restore') drawRestore();
     else drawSignup();
   }
 
-  function finish(address) { cat.destroy(); onReady(address); }
+  function finish(address) { onReady(address); }
 
   function drawSignin() {
     form.append(
@@ -140,7 +137,7 @@ export function renderOnboard(root, { onReady }) {
         submit.disabled = false; submit.lastChild.textContent = 'Create my address';
       }
     });
-    form.append(h('h1', null, 'Get your doodle address'), f);
+    form.append(h('h1', null, 'Create your account'), f);
     setTimeout(() => name.focus(), 50);
   }
 

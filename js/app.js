@@ -8,7 +8,6 @@ import { openDB, deleteDB } from './db.js';
 import { fingerprint } from './crypto.js';
 import { createTransport } from './net.js';
 import { onIncoming, onDelivery } from './mail.js';
-import { mountCat } from './cat.js';
 import { renderOnboard } from './ui/onboard.js';
 import { openCompose, closeAllComposers } from './ui/compose.js';
 import { renderReader, renderReaderEmpty, refreshReaderChrome } from './ui/reader.js';
@@ -97,7 +96,6 @@ function stopSession() {
   tickers.forEach(clearInterval); tickers = [];
   S.transport?.stop(); S.transport = null;
   closeAllComposers(); closeMenus();
-  S.cat?.destroy(); S.cat = null;
   S.db?.close(); S.db = null;
   S.msgs = new Map(); S.account = null; S.settings = null; S.status = 'offline';
   document.title = 'doodle.mail';
@@ -118,7 +116,6 @@ function buildShell() {
   root.className = '';
   clear(root);
   ui.search = h('input', { type: 'search', placeholder: 'Search mail, people, or anything…', 'aria-label': 'Search mail', autocomplete: 'off', spellcheck: 'false' });
-  ui.status = h('span', { class: 'status-pill', role: 'status' });
   ui.avatar = h('button', { class: 'avatar-btn', 'aria-label': 'Account menu', 'data-menu-anchor': '', onclick: (e) => accountMenu(e.currentTarget) });
   ui.themeBtn = h('button', { class: 'icon-btn hide-sm', title: 'Toggle light/dark', 'aria-label': 'Toggle theme', onclick: () => {
     const cur = document.documentElement.dataset.theme;
@@ -126,7 +123,6 @@ function buildShell() {
   } });
   ui.nav = h('nav', { class: 'nav', 'aria-label': 'Folders' });
   ui.labels = h('div', { class: 'nav', 'aria-label': 'Labels' });
-  ui.catStage = h('div', { class: 'cat-stage' });
   ui.sidebar = h('aside', { class: 'sidebar' },
     h('div', { class: 'brand-mobile' }, icon('logo'), 'doodle.mail'),
     h('button', { class: 'compose-btn', onclick: () => { closeDrawer(); openCompose(); } }, icon('pencil'), 'Compose'),
@@ -135,8 +131,7 @@ function buildShell() {
         const { promptDialog } = await import('./ui/common.js');
         const n = await promptDialog('New label', 'Label name', '', { iconName: 'label', okLabel: 'Create' });
         if (n) A.createLabel(n);
-      } }, icon('plus'))), ui.labels),
-    ui.catStage);
+      } }, icon('plus'))), ui.labels));
   ui.main = h('main', { class: 'main' });
   ui.app = h('div', { class: 'app' },
     h('a', { class: 'brand', href: '#/f/inbox', 'aria-label': 'doodle.mail inbox' }, icon('logo'), h('span', { class: 'brand-name' }, 'doodle.mail')),
@@ -145,7 +140,7 @@ function buildShell() {
       h('form', { class: 'search', role: 'search', onsubmit: (e) => { e.preventDefault(); doSearch(ui.search.value, true); } },
         icon('search'), ui.search,
         h('button', { type: 'button', class: 'icon-btn sm', title: 'Search options', 'aria-label': 'Search options', 'data-menu-anchor': '', onclick: (e) => advancedSearch(e.currentTarget) }, icon('sliders'))),
-      h('div', { class: 'top-actions' }, ui.status,
+      h('div', { class: 'top-actions' },
         h('button', { class: 'icon-btn hide-sm', title: 'Help & shortcuts (?)', 'aria-label': 'Help', onclick: showHelp }, icon('help')),
         h('a', { class: 'icon-btn', href: '#/settings/general', title: 'Settings', 'aria-label': 'Settings' }, icon('gear')),
         ui.themeBtn, ui.avatar)),
@@ -156,7 +151,6 @@ function buildShell() {
   renderAvatar();
   renderStatus();
   renderSidebar();
-  syncCat();
 }
 
 function closeDrawer() { ui.app?.classList.remove('drawer-open'); }
@@ -170,10 +164,6 @@ function renderStatus() {
   ui.status.className = `status-pill ${S.status}`;
   ui.status.title = S.status === 'online' ? `Reachable as ${S.account.address}@doodle.mail` : 'Letters will queue in the Outbox until you are back online';
   clear(ui.status).append(h('i'), h('span', { class: 'txt' }, txt));
-}
-function syncCat() {
-  if (S.settings.cat && !S.cat) S.cat = mountCat(ui.catStage);
-  if (!S.settings.cat && S.cat) { S.cat.destroy(); S.cat = null; }
 }
 
 let showMore = false;
@@ -498,14 +488,13 @@ function wire() {
   unsubs.push(onChange((kind) => {
     if (!S.account) return;
     if (kind === 'msgs' || kind === 'settings' || kind === 'snoozed') { renderSidebar(); if (S.route.view !== 'settings') renderMain(false); }
-    if (kind === 'settings') { syncCat(); renderThemeBtn(); }
+    if (kind === 'settings') renderThemeBtn();
     if (kind === 'account') renderAvatar();
     if (kind.startsWith('incoming:')) {
       const m = S.msgs.get(kind.slice(9));
       renderSidebar(); if (S.route.view !== 'settings') renderMain(false);
       if (!m || m.loc !== 'inbox') return;
       toast(`New letter from ${m.from.name || m.from.address}`, { action: 'Open', onAction: () => go(`#/f/inbox/m/${m.id}`) });
-      S.cat?.nudge('mail!');
       if (S.settings.notifications && document.hidden && 'Notification' in window && Notification.permission === 'granted') {
         try { const n = new Notification(m.from.name || m.from.address, { body: m.subject, tag: m.id, icon: 'favicon.svg' }); n.onclick = () => { focus(); go(`#/f/inbox/m/${m.id}`); n.close(); }; } catch { /* ignore */ }
       }

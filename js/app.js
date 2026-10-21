@@ -124,7 +124,6 @@ function buildShell() {
   ui.nav = h('nav', { class: 'nav', 'aria-label': 'Folders' });
   ui.labels = h('div', { class: 'nav', 'aria-label': 'Labels' });
   ui.sidebar = h('aside', { class: 'sidebar' },
-    h('div', { class: 'brand-mobile' }, icon('logo'), 'doodle.mail'),
     h('button', { class: 'compose-btn', onclick: () => { closeDrawer(); openCompose(); } }, icon('pencil'), 'Compose'),
     h('div', { class: 'side-scroll' }, ui.nav, h('div', { class: 'side-sep' }),
       h('div', { class: 'labels-head' }, h('span', null, 'Labels'), h('button', { class: 'icon-btn sm', title: 'New label', 'aria-label': 'New label', onclick: async () => {

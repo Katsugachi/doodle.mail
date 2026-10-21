@@ -1,4 +1,4 @@
-// doodle.mail — app shell, routing, list, wiring.
+// doodle.mail - app shell, routing, list, wiring.
 import { h, icon, clear, debounce, fmtListDate, initial, snippet, dayBucket, plural } from './util.js';
 import {
   S, FOLDERS, listAccounts, currentAddress, setCurrent, loadSettings, saveSettings, applyTheme, removeAccount,
@@ -191,7 +191,7 @@ function renderSidebar() {
     const active = r.view === 'label' && r.labelId === l.id;
     ui.labels.appendChild(h('a', { class: 'nav-item label-item' + (active ? ' active' : ''), href: `#/l/${l.id}`, onclick: closeDrawer }, icon('label'), h('span', null, l.name), c.labels[l.id] ? h('span', { class: 'cnt' }, String(c.labels[l.id])) : null));
   });
-  if (!S.settings.labels.length) ui.labels.appendChild(h('div', { class: 'storage-note' }, 'No labels yet — add one with +'));
+  if (!S.settings.labels.length) ui.labels.appendChild(h('div', { class: 'storage-note' }, 'No labels yet. Add one with +'));
   document.title = c.inbox ? `(${c.inbox}) doodle.mail` : 'doodle.mail';
 }
 
@@ -281,7 +281,7 @@ function renderReaderPane(force) {
     return;
   }
   if (!force && readerState.id === id) {
-    // body changed (e.g. a reply arrived) — rerender but keep scroll + quick reply text
+    // body changed (e.g. a reply arrived): rerender but keep scroll + quick reply text
     const sc = ui.readerPane.querySelector('.reader-scroll')?.scrollTop || 0;
     const qr = ui.readerPane.querySelector('.quick-reply textarea')?.value || '';
     renderReader(ui.readerPane, id, { onBack: backToList });
@@ -412,7 +412,7 @@ function rowFor(m) {
     h('div', { class: 'row-main' },
       h('div', { class: 'row-from' }, h('span', { style: { overflow: 'hidden', textOverflow: 'ellipsis' } }, name), tags.length ? h('span', { class: 'mini-tags' }, tags) : null),
       h('div', { class: 'row-subject' }, m.subject || '(no subject)'),
-      h('div', { class: 'row-snip' }, h('span', { style: { overflow: 'hidden', textOverflow: 'ellipsis' } }, snippet(m.text) || '—'), m.attachments?.length ? icon('clip') : null)),
+      h('div', { class: 'row-snip' }, h('span', { style: { overflow: 'hidden', textOverflow: 'ellipsis' } }, snippet(m.text) || '-'), m.attachments?.length ? icon('clip') : null)),
     h('div', { class: 'row-side' }, h('span', { class: 'row-date' }, fmtListDate(m.sortDate || m.date)), h('span', { class: 'row-icons' }, imp, star)));
   return el;
 }
@@ -458,7 +458,7 @@ function accountMenu(anchor) {
     h('div', { style: { display: 'flex', gap: '12px', alignItems: 'center', padding: '8px 12px 10px' } },
       h('span', { class: 'avatar lg' }, initial(S.account.name)),
       h('div', { style: { minWidth: 0 } }, h('div', { style: { fontSize: '20px' } }, S.account.name), h('div', { class: 'hint' }, `${S.account.address}@doodle.mail`))),
-    { label: 'Copy my address', icon: 'copy', onClick: () => navigator.clipboard?.writeText(`${S.account.address}@doodle.mail`).then(() => toast('Address copied — share it with a friend')) },
+    { label: 'Copy my address', icon: 'copy', onClick: () => navigator.clipboard?.writeText(`${S.account.address}@doodle.mail`).then(() => toast('Address copied, share it with a friend')) },
     { label: 'Account & backup', icon: 'user', onClick: () => go('#/settings/account') },
     { label: 'Appearance', icon: 'palette', onClick: () => go('#/settings/appearance') },
     'sep',
@@ -475,7 +475,7 @@ function showHelp() {
     body: [
       h('div', { class: 'terms-text' },
         h('p', null, `You are ${S.account.address}@doodle.mail. Share that address; anyone using doodle.mail can write to you.`),
-        h('p', null, 'Letters go directly browser-to-browser. If a friend is offline, your letter waits in the Outbox and is delivered automatically when you are both online. Everything is stored only in this browser — export a backup in Settings → Account.')),
+        h('p', null, 'Letters go directly browser-to-browser. If a friend is offline, your letter waits in the Outbox and is delivered automatically when you are both online. Everything is stored only in this browser. Export a backup in Settings → Account.')),
       h('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '8px 18px' } },
         sc.map(([k, d]) => h('div', { style: { display: 'flex', gap: '10px', alignItems: 'center' } }, h('span', { class: 'kbd' }, k), h('span', null, d)))),
     ],

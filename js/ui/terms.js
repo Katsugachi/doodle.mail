@@ -7,7 +7,7 @@ export function termsBody() {
     sec('1. What doodle.mail is',
       'doodle.mail is a static web app that runs entirely in your browser. Messages travel directly between browsers over encrypted WebRTC data channels. A public signalling server (PeerJS by default, or one you configure) is used only to help two browsers find each other; it never receives message contents.'),
     sec('2. Your data stays on your device',
-      'Your address, identity key, settings, messages and attachments are stored in this browser (IndexedDB and localStorage). We do not run servers that store or back up your mail. Clearing site data, using private browsing, or losing the device will delete it — export a backup from Settings → Account if it matters to you.'),
+      'Your address, identity key, settings, messages and attachments are stored in this browser (IndexedDB and localStorage). We do not run servers that store or back up your mail. Clearing site data, using private browsing, or losing the device will delete it. Export a backup from Settings → Account if it matters to you.'),
     sec('3. Addresses',
       'Addresses are first-come, first-served among people who are online, and are tied to a signing key generated on your device. Recipients pin the first key they see for an address and warn if it ever changes. Do not impersonate others or claim addresses to mislead people.'),
     sec('4. Delivery',

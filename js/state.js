@@ -45,7 +45,7 @@ export function defaultSettings(name) {
   return {
     theme: 'system',
     density: 'default',
-    signatures: [{ id: sigId, name: 'Default', text: `— ${name || ''}`.trim() }],
+    signatures: [{ id: sigId, name: 'Default', text: `- ${name || ''}`.trim() }],
     sigNew: sigId,
     sigReply: sigId,
     labels: ['Work', 'Personal', 'Ideas', 'Later', 'Fun'].map(n => ({ id: uuid(), name: n })),

@@ -33,14 +33,14 @@ export function welcomeMessage(address, name, uuid) {
     subject: 'Welcome to doodle.mail!',
     text: `Hi ${name || 'there'},
 
-Welcome to your new notebook! Your address is ${address}@doodle.mail — share it with friends so they can write to you.
+Welcome to your new notebook! Your address is ${address}@doodle.mail. Share it with friends so they can write to you.
 
 A few things worth knowing:
 
 • Mail travels straight from browser to browser over WebRTC. If your friend isn't online, your letter waits in the Outbox and is delivered automatically the moment you're both around.
 • Everything is saved only in this browser. Export a backup from Settings → Account if you'd like a copy.
 • Every letter is signed with your personal key, so friends can tell it's really you.
-• Attach images, zips or any file up to 25 MB. HTML files render as live previews in a locked sandbox — try the card below!
+• Attach images, zips or any file up to 25 MB. HTML files render as live previews in a locked sandbox. Try the card below!
 • Make it yours in Settings: signatures, labels, light/dark theme and inbox density.
 
 Happy doodling,

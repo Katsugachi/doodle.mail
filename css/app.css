@@ -1,4 +1,4 @@
-/* doodle.mail — notebook doodle, monochrome */
+/* doodle.mail - notebook doodle, monochrome */
 @font-face { font-family: "Patrick Hand"; src: url(../fonts/patrick-hand-latin.woff2) format("woff2"); font-display: swap;
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 @font-face { font-family: "Patrick Hand"; src: url(../fonts/patrick-hand-latin-ext.woff2) format("woff2"); font-display: swap;
@@ -381,8 +381,7 @@ a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; 
 .suggest button { display: flex; gap: 10px; align-items: center; width: 100%; padding: 6px 10px; border-radius: 9px; text-align: left; }
 .suggest button.on, .suggest button:hover { background: var(--hover); }
 .suggest .avatar { width: 30px; height: 30px; font-size: 15px; }
-.compose textarea.body { flex: 1; min-height: 180px; border: 0; outline: none; background: none; resize: none; padding: 14px 18px; font-size: 18.5px; line-height: 1.6;
-  background-image: repeating-linear-gradient(to bottom, transparent 0, transparent calc(1.6em - 1px), var(--line-soft) calc(1.6em - 1px), var(--line-soft) 1.6em); background-attachment: local; background-position: 0 14px; }
+.compose textarea.body { flex: 1; min-height: 180px; border: 0; outline: none; background: none; resize: none; padding: 14px 18px; font-size: 18.5px; line-height: 1.6; }
 .compose .sig-preview { margin: 0 18px 8px; padding: 6px 12px; border-left: 2px solid var(--line-soft); white-space: pre-wrap; color: var(--ink-2); font-size: 16.5px; }
 .compose-atts { display: flex; flex-wrap: wrap; gap: 8px; padding: 6px 16px 10px; }
 .compose-att { display: inline-flex; align-items: center; gap: 8px; padding: 4px 6px 4px 12px; border: 1.3px solid var(--line-soft); border-radius: 12px 14px 12px 13px; font-size: 15px; max-width: 260px; }
@@ -440,7 +439,6 @@ a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; 
 .onboard-card { width: min(980px, 100%); display: grid; grid-template-columns: 1.05fr 1fr; overflow: hidden; }
 .onboard-art { padding: 38px 38px 30px; border-right: 1.5px solid var(--line-soft); display: flex; flex-direction: column; gap: 16px; position: relative; min-height: 560px;
   }
-.onboard-art::before { content: ""; position: absolute; top: 0; bottom: 0; left: 26px; border-left: 1.5px solid var(--ink-3); opacity: .5; }
 .onboard-art .brand-big { display: flex; align-items: center; gap: 14px; font-size: 40px; }
 .onboard-art .brand-big .ic { width: 62px; height: 62px; stroke-width: 1.4; transform: rotate(-5deg); }
 .onboard-art .tagline { font-size: 25px; line-height: 34px; max-width: 380px; }
@@ -508,7 +506,7 @@ a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; 
   .settings-nav .nav-item { width: auto; white-space: nowrap; }
   .settings-body { padding: 18px 18px 50px; }
   .onboard-card { grid-template-columns: 1fr; }
-  .onboard-art { min-height: 0; border-right: 0; border-bottom: 1.5px solid var(--line-soft); padding: 26px 26px 20px 40px; }
+  .onboard-art { min-height: 0; border-right: 0; border-bottom: 1.5px solid var(--line-soft); padding: 26px 26px 20px; }
   .onboard-art ul { display: none; }
   .onboard-form { padding: 24px 22px; }
   .grid-2 { grid-template-columns: 1fr; }

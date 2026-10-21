@@ -17,12 +17,12 @@ export function renderOnboard(root, { onReady }) {
 
   const art = h('div', { class: 'onboard-art' },
     h('div', { class: 'brand-big' }, icon('logo'), h('span', null, 'doodle.mail')),
-    h('div', { class: 'tagline' }, 'Little letters, passed hand to hand. No servers keep your mail — it lives in your notebook.'),
+    h('div', { class: 'tagline' }, 'Little letters, passed hand to hand. No servers keep your mail; it lives in your notebook.'),
     h('ul', null,
       h('li', null, icon('send'), 'Peer-to-peer delivery over WebRTC'),
       h('li', null, icon('outbox'), 'Queued until your friend comes online'),
       h('li', null, icon('shield'), 'Signed messages, pinned sender keys'),
-      h('li', null, icon('code'), 'Send HTML that renders — safely sandboxed'),
+      h('li', null, icon('code'), 'Send HTML that renders (safely sandboxed)'),
       h('li', null, icon('clip'), 'Images, zips & files up to 25 MB'),
     ));
   const form = h('div', { class: 'onboard-form' });
@@ -87,14 +87,14 @@ export function renderOnboard(root, { onReady }) {
       const handle = normalizeAddress(addr.value);
       const seq = ++checkSeq;
       if (!addr.value.trim()) { availability = 'unknown'; clear(status); validate(); return; }
-      if (!handle) { availability = 'invalid'; setStatus('alert', '3–24 characters: letters, numbers, - or _ (start and end with a letter/number)'); validate(); return; }
+      if (!handle) { availability = 'invalid'; setStatus('alert', '3-24 characters: letters, numbers, - or _ (start and end with a letter/number)'); validate(); return; }
       if (listAccounts().some(a => a.address === handle)) { availability = 'local'; setStatus('alert', 'You already have this address in this browser.'); validate(); return; }
       availability = 'checking'; setStatus('refresh', `Checking ${handle}@doodle.mail…`); validate();
       const r = await checkAvailability(handle);
       if (seq !== checkSeq) return;
       availability = r;
       if (r === 'available') setStatus('check', `${handle}@doodle.mail looks free`);
-      else if (r === 'taken') setStatus('ban', 'Someone is using that address right now — try another');
+      else if (r === 'taken') setStatus('ban', 'Someone is using that address right now. Try another');
       else setStatus('wifi', "Couldn't reach the signalling server; you can still create it offline");
       validate();
     }, 450);

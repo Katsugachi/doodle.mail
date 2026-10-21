@@ -111,7 +111,7 @@ function signatures(body) {
   body.append(
     section(pick('sigNew', 'For new letters'), pick('sigReply', 'For replies & forwards')),
     section(list, h('div', null, h('button', { class: 'btn', onclick: () => {
-      S.settings.signatures.push({ id: uuid(), name: `Signature ${S.settings.signatures.length + 1}`, text: `— ${S.account.name}` });
+      S.settings.signatures.push({ id: uuid(), name: `Signature ${S.settings.signatures.length + 1}`, text: `- ${S.account.name}` });
       saveSettings(); clear(body); signatures(body);
     } }, icon('plus'), 'Add signature'))));
 }
@@ -197,7 +197,7 @@ function network(body, hooks) {
       h('button', { class: 'btn primary', onclick: () => {
         if (ice.value.trim()) { try { const v = JSON.parse(ice.value); if (!Array.isArray(v)) throw 0; } catch { return toast('ICE servers must be a JSON array'); } }
         S.settings.network = { host: host.value.trim(), port: port.value.trim(), path: path.value.trim(), secure: secure.checked, iceServers: ice.value.trim() };
-        saveSettings(); hooks.reconnect(); toast('Saved — reconnecting…');
+        saveSettings(); hooks.reconnect(); toast('Saved, reconnecting…');
       } }, icon('check'), 'Save & reconnect'),
       h('button', { class: 'btn ghost', onclick: () => { S.settings.network = { host: '', port: '', path: '', secure: true, iceServers: '' }; saveSettings(); hooks.reconnect(); clear(body); network(body, hooks); } }, 'Reset to defaults')));
 }
@@ -214,7 +214,7 @@ async function account(body, hooks) {
     section(row('Storage used', est ? `${fmtSize(est.usage)} of about ${fmtSize(est.quota)} available to this site.` : 'Unknown', h('span', null, `${S.msgs.size} letters`)),
       row('Keep data safe', persisted ? 'The browser has agreed not to clear this data automatically.' : 'Ask the browser not to evict your mail when space is low.',
         h('button', { class: 'btn sm', disabled: persisted, onclick: async () => { const ok = await navigator.storage?.persist?.(); toast(ok ? 'Storage is now persistent' : 'The browser declined (try installing or bookmarking the site)'); clear(body); account(body, hooks); } }, icon('shield'), persisted ? 'Persistent' : 'Make persistent'))),
-    section(row('Export backup', 'Downloads a file with your mail, settings and private key. Keep it somewhere safe — anyone with it can send as you.',
+    section(row('Export backup', 'Downloads a file with your mail, settings and private key. Keep it somewhere safe; anyone with it can send as you.',
       h('button', { class: 'btn sm', onclick: async () => { const b = await exportBackup(); download(b, `doodlemail-${S.account.address}-backup.json`); } }, icon('download'), 'Export')),
       row('Import a backup', 'Use the Restore tab on the sign-in screen to open a backup in a new browser.', h('span'))),
     section(row('Sign out', 'Close this notebook. Your mail stays saved in this browser.', h('button', { class: 'btn sm', onclick: hooks.signOut }, icon('logout'), 'Sign out')),
@@ -226,7 +226,7 @@ async function account(body, hooks) {
 }
 
 function about(body) {
-  head(body, 'About & terms', 'doodle.mail — a peer-to-peer notebook mailbox.');
+  head(body, 'About & terms', 'doodle.mail, a peer-to-peer notebook mailbox.');
   body.append(
     section(h('div', { class: 'terms-text' },
       h('h3', null, 'How it works'),

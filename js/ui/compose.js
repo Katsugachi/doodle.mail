@@ -175,7 +175,7 @@ function composer(rec, persisted) {
     let total = rec.attachments.reduce((s, a) => s + a.size, 0);
     for (const f of files) {
       if (rec.attachments.length >= 20) { toast('Up to 20 attachments per letter.'); break; }
-      if (total + f.size > MAX_TOTAL) { toast(`"${f.name}" won't fit — letters can carry up to 25 MB.`); continue; }
+      if (total + f.size > MAX_TOTAL) { toast(`"${f.name}" won't fit (letters can carry up to 25 MB).`); continue; }
       total += f.size;
       rec.attachments.push(await storeFile(f));
     }
@@ -260,7 +260,7 @@ function composer(rec, persisted) {
       if (!m || !m.draft) return;
       await sendDraft(m);
       const online = S.status === 'online';
-      toast(online ? 'Letter on its way' : 'Queued in Outbox — will send when you are back online', { action: 'View', onAction: () => { location.hash = `#/f/sent/m/${m.id}`; } });
+      toast(online ? 'Letter on its way' : 'Queued in Outbox, will send when you are back online', { action: 'View', onAction: () => { location.hash = `#/f/sent/m/${m.id}`; } });
     };
     if (!secs) return go();
     let undone = false;

@@ -120,7 +120,7 @@ function verifyLine(x) {
     case 'invalid': return [h('b', null, '⚠ Signature invalid')];
     case 'system': return [h('span', null, 'Built-in welcome letter')];
     case 'self': return [h('span', null, 'Sent to yourself')];
-    default: return [h('span', null, x.dir === 'out' ? 'Signed with your key' : '—')];
+    default: return [h('span', null, x.dir === 'out' ? 'Signed with your key' : '-')];
   }
 }
 
@@ -135,7 +135,7 @@ function msgBlock(x, expanded) {
   let detailsOpen = false;
   const details = h('dl', { class: 'msg-details', hidden: true },
     h('dt', null, 'from'), h('dd', null, `${x.from.name || ''} <${x.from.address}@doodle.mail>`),
-    h('dt', null, 'to'), h('dd', null, x.to.map(a => a + '@doodle.mail').join(', ') || '—'),
+    h('dt', null, 'to'), h('dd', null, x.to.map(a => a + '@doodle.mail').join(', ') || '-'),
     x.cc.length ? [h('dt', null, 'cc'), h('dd', null, x.cc.map(a => a + '@doodle.mail').join(', '))] : null,
     x.bcc?.length ? [h('dt', null, 'bcc'), h('dd', null, x.bcc.map(a => a + '@doodle.mail').join(', '))] : null,
     h('dt', null, 'date'), h('dd', null, fmtFullDate(x.date)),
@@ -155,7 +155,7 @@ function msgBlock(x, expanded) {
     return block;
   }
   if (x.verified === 'mismatch' || x.verified === 'invalid') {
-    block.appendChild(h('div', { class: 'banner' }, icon('alert'), h('div', { class: 'grow' }, x.verified === 'mismatch' ? 'The signing key for this address has changed since their earlier letters. Be careful — check with them another way before trusting it.' : 'This letter could not be verified.')));
+    block.appendChild(h('div', { class: 'banner' }, icon('alert'), h('div', { class: 'grow' }, x.verified === 'mismatch' ? 'The signing key for this address has changed since their earlier letters. Be careful, and check with them another way before trusting it.' : 'This letter could not be verified.')));
   }
   if (isMe && Object.keys(x.delivery || {}).length) block.appendChild(deliveryChips(x));
   block.appendChild(bodyNode(x.text));
@@ -223,10 +223,10 @@ async function showHtml(a, wrap, card) {
   if (card._preview) { card._preview.remove(); card._preview = null; return; }
   const b = await S.db.blobs.get(a.id);
   if (!b) return toast('That attachment is missing.');
-  if (b.size > 5 * 1024 * 1024) return toast('That HTML file is too big to preview — download it instead.');
+  if (b.size > 5 * 1024 * 1024) return toast('That HTML file is too big to preview. Download it instead.');
   const html = await b.text();
   const box = h('div', { class: 'html-preview' });
-  const head = h('div', { class: 'html-preview-head' }, icon('shield'), h('span', { class: 'grow' }, `${a.name} — sandboxed: scripts on, network & your mail off`),
+  const head = h('div', { class: 'html-preview-head' }, icon('shield'), h('span', { class: 'grow' }, `${a.name} (sandboxed: scripts on, network & your mail off)`),
     h('button', { class: 'icon-btn sm', title: 'Reload', 'aria-label': 'Reload preview', onclick: () => { inst.destroy(); inst = renderHtmlPreview(box, html, { height: 420 }); } }, icon('refresh')),
     h('button', { class: 'icon-btn sm', title: 'Close preview', 'aria-label': 'Close preview', onclick: () => { box.remove(); card._preview = null; } }, icon('x')));
   box.appendChild(head);
@@ -283,7 +283,7 @@ async function cancelSending(m) {
     return;
   }
   await saveMsg({ ...m, draft: true, mid: null, delivery: {}, to: m.to, cc: m.cc, bcc: m.bcc });
-  toast('Sending cancelled — moved back to Drafts');
+  toast('Sending cancelled, moved back to Drafts');
   openCompose({ draftId: m.id });
   location.hash = '#/f/drafts';
 }

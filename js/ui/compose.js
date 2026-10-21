@@ -56,7 +56,7 @@ function composer(rec, persisted) {
 
   const subject = h('input', { class: 'bare', placeholder: 'Subject', value: rec.subject, maxlength: 500, 'aria-label': 'Subject' });
   subject.addEventListener('input', () => { rec.subject = subject.value; setTitle(); changed(); });
-  const body = h('textarea', { class: 'body', placeholder: 'Write something lovely…', 'aria-label': 'Message body', maxlength: 200000 });
+  const body = h('textarea', { class: 'body', placeholder: 'Write something...', 'aria-label': 'Message body', maxlength: 200000 });
   body.value = rec.text;
   body.addEventListener('input', () => { rec.text = body.value; changed(); });
   const sigEl = h('div', { class: 'sig-preview', title: 'Signature (added when sent)' });

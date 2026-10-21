@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:; form-action 'none'; base-uri 'none'; connect-src 'none'; frame-src 'none'; child-src 'none'; worker-src 'none'; object-src 'none'">
+</head>
+<body>
+  <script>
+    let received = false;
+    window.addEventListener('message', event => {
+      if (received || event.source !== window.parent) return;
+      if (!event.data || event.data.type !== 'doodle-render' || typeof event.data.html !== 'string') return;
+      received = true;
+      document.open();
+      document.write('<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; script-src \'unsafe-inline\'; style-src \'unsafe-inline\'; img-src data: blob:; media-src data: blob:; font-src data:; form-action \'none\'; base-uri \'none\'; connect-src \'none\'; frame-src \'none\'; child-src \'none\'; worker-src \'none\'; object-src \'none\'">' + event.data.html);
+      document.close();
+    });
+  </script>
+</body>
+</html>

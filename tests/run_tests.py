@@ -354,12 +354,55 @@ def test_net(browser, base_url):
         arg=reload_mid,
         timeout=60_000,
     )
+
+    cancel_recipient = random_handle("c")
+    cancelled_mid = alice_page.evaluate(
+        "(recipient) => window.enqueueMail(recipient)",
+        cancel_recipient,
+    )
+    alice_page.wait_for_function(
+        "(mid) => window.deliveries.some(event => event.mid === mid && event.state === 'queued')",
+        arg=cancelled_mid,
+        timeout=40_000,
+    )
+    alice_page.evaluate("(mid) => window.cancelMail(mid)", cancelled_mid)
+    assert_true(
+        alice_page.evaluate("window.outboxItems().then(items => items.length === 0)"),
+        "Cancellation did not empty the outbox",
+    )
+    delivery_count = alice_page.evaluate(
+        "(mid) => window.deliveries.filter(event => event.mid === mid).length",
+        cancelled_mid,
+    )
+
+    cancel_context = browser.new_context()
+    cancel_page = cancel_context.new_page()
+    cancel_page.goto(f"{base_url}/tests/net-harness.html")
+    cancel_page.wait_for_function("window.harnessReady === true")
+    cancel_page.evaluate("(handle) => window.setupMailbox(handle)", cancel_recipient)
+    cancel_page.wait_for_function("window.status === 'online'", timeout=45_000)
+    cancel_page.wait_for_timeout(20_000)
+    assert_true(
+        cancel_page.evaluate("(mid) => window.received.some(message => message.mid === mid)", cancelled_mid)
+        is False,
+        "Cancelled item was delivered after the recipient came online",
+    )
+    assert_true(
+        alice_page.evaluate(
+            "(mid) => window.deliveries.filter(event => event.mid === mid).length",
+            cancelled_mid,
+        ) == delivery_count,
+        "Transport reported a delivery after cancellation",
+    )
+    print("NET: cancellation removed the offline item and suppressed later delivery", flush=True)
+
     assert_true(taken == "taken" and available == "available", "Availability checks were inconsistent")
     print(
         "PASS net: PeerJS delivery/ack/TOFU, 10 MiB attachment, invalid signature, "
-        "offline scheduler, incoming flush, availability and reload persistence"
+        "offline scheduler, incoming flush, availability, reload persistence and cancellation"
     )
 
+    cancel_context.close()
     target_context.close()
     alice_context.close()
     bob_context.close()

@@ -164,6 +164,8 @@ export function createTransport({
   let reconnectDelay = 1_000;
   let scheduling = false;
   const busy = new Map();
+  const queuedItems = new Map();
+  const cancelledIds = new Set();
   const openConnections = new Map();
   const ackWaiters = new Map();
   const attachedConnections = new WeakSet();
@@ -178,6 +180,7 @@ export function createTransport({
   }
 
   function reportDelivery(item, state, info = {}) {
+    if (cancelledIds.has(item.id)) return;
     try {
       onDelivery?.(item, state, info);
     } catch {
@@ -408,6 +411,7 @@ export function createTransport({
   }
 
   async function persistFailure(item, error, state) {
+    if (cancelledIds.has(item.id)) return item;
     const attempts = (Number(item.attempts) || 0) + 1;
     const backoffIndex = Math.min(attempts - 1, BACKOFF.length - 1);
     const delay = attempts <= BACKOFF.length ? BACKOFF[backoffIndex] : 120_000;
@@ -418,6 +422,12 @@ export function createTransport({
       lastError: String(error?.message || error || 'delivery-failed'),
     };
     await outbox.put(updated);
+    if (cancelledIds.has(item.id)) {
+      queuedItems.delete(item.id);
+      await outbox.delete(item.id);
+      return updated;
+    }
+    queuedItems.set(item.id, updated);
     reportDelivery(updated, state, {
       error: updated.lastError,
       nextAttempt: updated.nextAttempt,
@@ -502,14 +512,25 @@ export function createTransport({
     if (!started || halted || busy.has(recipient)) return;
 
     let failActive;
+    let resolveItemsReady;
+    let resolveDone;
     const failurePromise = new Promise((resolve, reject) => {
       failActive = reject;
+    });
+    const itemsReady = new Promise(resolve => {
+      resolveItemsReady = resolve;
+    });
+    const done = new Promise(resolve => {
+      resolveDone = resolve;
     });
     failurePromise.catch(() => {});
     const active = {
       peerId: `${PEER_PREFIX}${recipient}`,
       conn: null,
       finished: false,
+      itemIds: new Set(),
+      itemsReady,
+      done,
       failurePromise,
       fail(error) {
         if (!this.finished) failActive(error || new Error('Delivery failed'));
@@ -523,6 +544,11 @@ export function createTransport({
         .filter(item => item.recipient === recipient)
         .filter(item => bypassBackoff || !item.nextAttempt || item.nextAttempt <= Date.now())
         .sort((left, right) => (left.createdAt || 0) - (right.createdAt || 0));
+      active.itemIds = new Set(items.map(item => item.id));
+      resolveItemsReady();
+      for (const item of items) {
+        if (!cancelledIds.has(item.id)) queuedItems.set(item.id, item);
+      }
       if (!items.length) return;
 
       const opened = await openConnection(recipient, active);
@@ -531,19 +557,31 @@ export function createTransport({
 
       for (let index = 0; index < items.length; index += 1) {
         const item = items[index];
+        if (cancelledIds.has(item.id)) continue;
         reportDelivery(item, 'sending');
         try {
           await sendAndWait(conn, active, item);
+          if (cancelledIds.has(item.id)) {
+            queuedItems.delete(item.id);
+            continue;
+          }
           await outbox.delete(item.id);
+          queuedItems.delete(item.id);
           reportDelivery(item, 'delivered');
         } catch (error) {
+          if (cancelledIds.has(item.id)) {
+            queuedItems.delete(item.id);
+            continue;
+          }
           if (error?.nack) {
             await persistFailure(item, error, 'failed');
             continue;
           }
           await persistFailure(item, error, 'queued');
           for (const remaining of items.slice(index + 1)) {
-            await persistFailure(remaining, error, 'queued');
+            if (!cancelledIds.has(remaining.id)) {
+              await persistFailure(remaining, error, 'queued');
+            }
           }
           break;
         }
@@ -554,6 +592,7 @@ export function createTransport({
         .filter(item => bypassBackoff || !item.nextAttempt || item.nextAttempt <= Date.now());
       for (const item of items) await persistFailure(item, error, 'queued');
     } finally {
+      resolveItemsReady();
       active.finished = true;
       if (ownedConnection && active.conn) {
         try {
@@ -563,6 +602,7 @@ export function createTransport({
         }
       }
       busy.delete(recipient);
+      resolveDone();
     }
   }
 
@@ -605,7 +645,10 @@ export function createTransport({
     }
     ensureScheduler();
     try {
-      await outbox.all();
+      const items = await outbox.all();
+      for (const item of items) {
+        if (!cancelledIds.has(item.id)) queuedItems.set(item.id, item);
+      }
     } catch (error) {
       setStatus('error', error);
     }
@@ -647,14 +690,32 @@ export function createTransport({
 
   async function enqueue(item) {
     await outbox.put(item);
+    queuedItems.set(item.id, item);
     if (started && !halted) void flushRecipient(item.recipient, true);
     else reportDelivery(item, 'queued', { nextAttempt: item.nextAttempt });
+  }
+
+  async function cancel(itemId) {
+    cancelledIds.add(itemId);
+    queuedItems.delete(itemId);
+    await outbox.delete(itemId);
+
+    const attempts = [...busy.values()];
+    const activeAttempts = [];
+    for (const active of attempts) {
+      await active.itemsReady;
+      if (active.itemIds.has(itemId)) activeAttempts.push(active.done);
+    }
+    await Promise.all(activeAttempts);
+    queuedItems.delete(itemId);
+    cancelledIds.delete(itemId);
   }
 
   return {
     start,
     stop,
     enqueue,
+    cancel,
     retryNow,
     get status() {
       return currentStatus;

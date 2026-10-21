@@ -156,6 +156,7 @@
     };
 
     window.outboxItems = () => db.outbox.all();
+    window.cancelMail = itemId => transport.cancel(itemId);
     window.checkAddress = addressToCheck => checkAvailability(addressToCheck);
     window.flushNow = () => {
       window.retryNowCalls += 1;

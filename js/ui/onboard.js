@@ -69,8 +69,8 @@ export function renderOnboard(root, { onReady }) {
   }
 
   function drawSignup() {
-    const name = h('input', { class: 'input', id: 'su-name', autocomplete: 'name', maxlength: 40, placeholder: 'Maya Chen' });
-    const addr = h('input', { id: 'su-addr', autocomplete: 'off', spellcheck: 'false', maxlength: 24, placeholder: 'maya', 'aria-describedby': 'su-addr-status' });
+    const name = h('input', { class: 'input', id: 'su-name', autocomplete: 'name', maxlength: 40, placeholder: 'John Doe' });
+    const addr = h('input', { id: 'su-addr', autocomplete: 'off', spellcheck: 'false', maxlength: 24, placeholder: 'johndoe', 'aria-describedby': 'su-addr-status' });
     const status = h('div', { class: 'addr-status', id: 'su-addr-status', 'aria-live': 'polite' });
     const tos = h('input', { type: 'checkbox', id: 'su-tos' });
     const submit = h('button', { class: 'btn primary', type: 'submit', disabled: true }, icon('pencil'), 'Create my address');

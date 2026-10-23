@@ -94,7 +94,7 @@ export function renderOnboard(root, { onReady }) {
       if (seq !== checkSeq) return;
       availability = r;
       if (r === 'available') setStatus('check', `${handle}@doodle.mail looks free`);
-      else if (r === 'taken') setStatus('ban', 'Someone is using that address right now — try another');
+      else if (r === 'taken') setStatus('ban', 'Someone is using that address right now, try another');
       else setStatus('wifi', "Couldn't reach the signalling server; you can still create it offline");
       validate();
     }, 450);

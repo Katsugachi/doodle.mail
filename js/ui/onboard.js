@@ -17,12 +17,12 @@ export function renderOnboard(root, { onReady }) {
 
   const art = h('div', { class: 'onboard-art' },
     h('div', { class: 'brand-big' }, icon('logo'), h('span', null, 'doodle.mail')),
-    h('div', { class: 'tagline' }, 'Little letters, passed hand to hand. No servers keep your mail — it lives in your notebook.'),
+    h('div', { class: 'tagline' }, 'Fast, private local serverless message delivery'),
     h('ul', null,
       h('li', null, icon('send'), 'Peer-to-peer delivery over WebRTC'),
       h('li', null, icon('outbox'), 'Queued until your friend comes online'),
       h('li', null, icon('shield'), 'Signed messages, pinned sender keys'),
-      h('li', null, icon('code'), 'Send HTML that renders — safely sandboxed'),
+      h('li', null, icon('code'), 'Send HTML that renders'),
       h('li', null, icon('clip'), 'Images, zips & files up to 25 MB'),
     ));
   const form = h('div', { class: 'onboard-form' });
@@ -119,9 +119,9 @@ export function renderOnboard(root, { onReady }) {
       h('div', { class: 'field' }, h('label', { for: 'su-name' }, 'Your name'), name),
       h('div', { class: 'field' }, h('label', { for: 'su-addr' }, 'Pick an address'),
         h('div', { class: 'addr-input' }, addr, h('span', { class: 'suffix' }, '@doodle.mail')), status),
-      h('label', { class: 'check', for: 'su-tos' }, tos, h('span', null, 'I have read and agree to the ', terms, '. I understand my mail is stored only on this device and delivered peer-to-peer.')),
+      h('label', { class: 'check', for: 'su-tos' }, tos, h('span', null, 'I have read and agree to the ', terms, '. ')),
       h('div', null, submit),
-      h('div', { class: 'hint' }, 'No password, no tracking. Your identity key is created and kept in this browser.'));
+      h('div', { class: 'hint' }, 'Your identity key is created and kept locally'));
     f.addEventListener('submit', async (e) => {
       e.preventDefault();
       const handle = validate();
